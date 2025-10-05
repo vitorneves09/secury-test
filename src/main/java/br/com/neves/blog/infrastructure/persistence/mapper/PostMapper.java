@@ -12,6 +12,7 @@ public class PostMapper {
                 .content(post.getContent())
                 .tag(post.getTag())
                 .slug(post.getSlug())
+                .authorId(post.getAuthorId())
                 .build();
     }
 
@@ -22,6 +23,7 @@ public class PostMapper {
                 .content(entity.getContent())
                 .tag(entity.getTag())
                 .slug(entity.getSlug())
+                .authorId(entity.getAuthorId())
                 .build();
     }
 }

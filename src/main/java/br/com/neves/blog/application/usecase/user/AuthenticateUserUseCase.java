@@ -31,7 +31,7 @@ public class AuthenticateUserUseCase {
             throw new BadCredentialsException("Credenciais inválidas");
         }
 
-        String token = jwtUtil.generateToken(user.getUsername(), user.getRole());
+        String token = jwtUtil.generateToken(user.getUsername(), user.getRole(),user.getId());
 
         return new LoginResponse(token, user.getUsername(), user.getRole());
     }

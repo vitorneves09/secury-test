@@ -10,7 +10,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
-import java.util.Map;
 
 @RestController
 @RequestMapping("api/auth")
@@ -28,6 +27,7 @@ public class AuthController {
        }catch (Exception e) {
            HashMap<String, String> error = new HashMap<>();
            error.put("error", e.getMessage());
-           return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);       }
+           return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
+       }
     }
 }

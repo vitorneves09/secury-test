@@ -2,24 +2,41 @@ package br.com.neves.blog.infrastructure.persistence.repository;
 
 import br.com.neves.blog.domain.entity.Post;
 import br.com.neves.blog.domain.repository.PostRepository;
+import br.com.neves.blog.infrastructure.persistence.mapper.PostMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
+@Repository
 public class PostRespositoryImp implements PostRepository {
 
     @Autowired
     PostJpaRepository repository;
 
     public Optional<Post> findById(Long id) {
-        return repository.findById(id).map(Post);
+        return repository.findById(id).map(PostMapper::toDomain);
     }
 
     public Optional<Post> findByTitle(String title) {
-        return Optional.empty();
+        return repository.findByTitle(title).map(PostMapper::toDomain);
     }
 
     public Optional<Post> findBySlug(String slug) {
-        return Optional.empty();
+        return repository.findBySlug(slug).map(PostMapper::toDomain);
+    }
+
+    @Override
+    public Post save(Post post) {
+        return PostMapper.toDomain(repository.save(PostMapper.toEntity(post)));
+    }
+
+    @Override
+    public List<Post> findAll() {
+        return repository.findAll().stream()
+                .map(PostMapper::toDomain)
+                .collect(Collectors.toList());
     }
 }
