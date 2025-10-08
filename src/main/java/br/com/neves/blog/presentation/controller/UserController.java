@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.Optional;
 
 @RestController
@@ -23,7 +24,7 @@ public class UserController {
     private FindUserUseCase findUserUseCase;
 
     @PostMapping
-    public ResponseEntity<User> createUser(@Valid @RequestBody CreateUserRequest request) {
+    public ResponseEntity<?> createUser(@Valid @RequestBody CreateUserRequest request) {
         try {
             User user = User.builder()
                     .username(request.getUsername())
@@ -36,7 +37,9 @@ public class UserController {
 
             return ResponseEntity.status(HttpStatus.CREATED).body(createdUser);
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+            HashMap<String, Object> response = new HashMap<>();
+            response.put("message", e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
         }
     }
 

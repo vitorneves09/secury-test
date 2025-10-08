@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class CreatePostRequest {
+public class PostRequest {
 
     @NotBlank(message = "title is required")
     @Size(min = 10 , message = "Title most be more 10 characters ")

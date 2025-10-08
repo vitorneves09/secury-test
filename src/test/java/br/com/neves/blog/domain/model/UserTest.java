@@ -1,5 +1,6 @@
 package br.com.neves.blog.domain.model;
 
+import br.com.neves.blog.domain.entity.User;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

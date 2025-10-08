@@ -1,5 +1,7 @@
 package br.com.neves.blog.exception.handler;
 
+import br.com.neves.blog.exception.NotPermissionException;
+import br.com.neves.blog.exception.UserNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -31,6 +33,22 @@ public class GlobalExceptionHandler {
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
     @ExceptionHandler({BadCredentialsException.class, UsernameNotFoundException.class})
     public Map<String, String> handleAuthenticationExceptions(Exception ex) {
+        Map<String, String> error = new HashMap<>();
+        error.put("message", ex.getMessage());
+        return error;
+    }
+
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    @ExceptionHandler(UserNotFoundException.class)
+    public Map<String, String> handleUserNotFoundException(UserNotFoundException ex) {
+        Map<String, String> error = new HashMap<>();
+        error.put("message", ex.getMessage());
+        return error;
+    }
+
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    @ExceptionHandler(NotPermissionException.class)
+    public Map<String, String> handleNotPermissionException(NotPermissionException ex) {
         Map<String, String> error = new HashMap<>();
         error.put("message", ex.getMessage());
         return error;

@@ -1,32 +1,36 @@
 package br.com.neves.blog.application.usecase.post;
 
+import br.com.neves.blog.application.service.AuthService;
 import br.com.neves.blog.domain.entity.Post;
-import br.com.neves.blog.domain.entity.User;
 import br.com.neves.blog.domain.repository.PostRepository;
-import br.com.neves.blog.domain.repository.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.context.SecurityContextHolder;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
+
 @Service
+@RequiredArgsConstructor
+@Slf4j
 public class CreatePostUseCase {
 
-    @Autowired
-    private PostRepository postRepository;
-
-    @Autowired
-    private UserRepository userRepository;
+    private final PostRepository postRepository;
+    private final AuthService authService;
 
     public Post execute(Post post) {
-        // Obtém o username do usuário autenticado
-        String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        String username = authService.getAuthenticatedUsername();
 
-        User user = userRepository.findByUsername(username)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+        log.info("Creating post for user: {}", username);
 
-        // Associa o autor ao post
-        post.setAuthorId(user.getId());
+        Long userId = authService.getAuthenticatedUserId();
 
-        return postRepository.save(post);
+        post.setAuthorId(userId);
+        post.setCreated(new Date());
+
+        Post savedPost = postRepository.save(post);
+
+        log.info("Post created successfully with id: {}", savedPost.getId());
+
+        return savedPost;
     }
 }

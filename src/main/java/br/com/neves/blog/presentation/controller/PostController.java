@@ -3,10 +3,13 @@ package br.com.neves.blog.presentation.controller;
 import br.com.neves.blog.application.usecase.post.CreatePostUseCase;
 import br.com.neves.blog.application.usecase.post.FindPostUseCase;
 import br.com.neves.blog.application.usecase.post.ListAllPostUseCase;
+import br.com.neves.blog.application.usecase.post.UpdatePostUseCase;
 import br.com.neves.blog.domain.entity.Post;
-import br.com.neves.blog.presentation.dto.CreatePostRequest;
+import br.com.neves.blog.presentation.dto.PostRequest;
+import br.com.neves.blog.presentation.dto.PostResponse;
+import br.com.neves.blog.presentation.mapper.PostDtoMapper;
 import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -15,31 +18,21 @@ import java.util.List;
 
 @RestController
 @RequestMapping("api/posts")
+@RequiredArgsConstructor
 public class PostController {
 
-    @Autowired
-    private CreatePostUseCase createPostUseCase;
-
-    @Autowired
-    private FindPostUseCase findPostUseCase;
-
-    @Autowired
-    private ListAllPostUseCase listAllPostUseCase;
+    private final CreatePostUseCase createPostUseCase;
+    private final FindPostUseCase findPostUseCase;
+    private final ListAllPostUseCase listAllPostUseCase;
+    private final UpdatePostUseCase updatePostUseCase;
+    private final PostDtoMapper postDtoMapper;
 
     @PostMapping
-    public ResponseEntity<Post> createPost(@Valid @RequestBody CreatePostRequest request) {
-        try {
-            Post post = Post.builder()
-                    .title(request.getTitle())
-                    .content(request.getContent())
-                    .build();
+    public ResponseEntity<PostResponse> createPost(@Valid @RequestBody PostRequest request) {
+        Post post = postDtoMapper.toDomain(request);
+        Post savedPost = createPostUseCase.execute(post);
 
-            Post savedPost = createPostUseCase.execute(post);
-
-            return ResponseEntity.status(HttpStatus.CREATED).body(savedPost);
-        }catch (Exception e) {
-            return ResponseEntity.badRequest().build();
-        }
+        return ResponseEntity.status(HttpStatus.CREATED).body(postDtoMapper.toResponse(savedPost));
     }
 
     @GetMapping
@@ -57,6 +50,17 @@ public class PostController {
     public ResponseEntity<List<Post>> listAllPosts() {
         List<Post> posts = listAllPostUseCase.execute();
         return ResponseEntity.ok(posts);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<PostResponse> updatePost(
+            @PathVariable Long id,
+            @Valid @RequestBody PostRequest request) {
+        Post post = postDtoMapper.toDomain(request);
+
+        Post updatedPost = updatePostUseCase.execute(id, post);
+
+        return ResponseEntity.ok(postDtoMapper.toResponse(updatedPost));
     }
 
 }
