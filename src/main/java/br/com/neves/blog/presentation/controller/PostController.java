@@ -32,6 +32,7 @@ public class PostController {
     public ResponseEntity<?> createPost(@Valid @RequestBody PostRequest request) {
        try{
            Post post = postDtoMapper.toDomain(request);
+
            Post savedPost = createPostUseCase.execute(post);
 
            return ResponseEntity.status(HttpStatus.CREATED).body(postDtoMapper.toResponse(savedPost));

@@ -9,4 +9,6 @@ public interface PostJpaRepository  extends JpaRepository<PostEntity, Long> {
     Optional<PostEntity> findById(Long id);
     Optional<PostEntity> findByTitle(String title);
     Optional<PostEntity> findBySlug(String slug);
+    boolean existsBySlug(String slug);
+    boolean existsByTitle(String title);
 }

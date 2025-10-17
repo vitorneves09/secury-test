@@ -28,6 +28,10 @@ public class PostRespositoryImp implements PostRepository {
         return repository.findBySlug(slug).map(PostMapper::toDomain);
     }
 
+    public boolean existsBySlug(String slug) { return repository.existsBySlug(slug); }
+
+    public boolean existsByTitle(String title) { return repository.existsByTitle(title); }
+
     @Override
     public Post save(Post post) {
         return PostMapper.toDomain(repository.save(PostMapper.toEntity(post)));

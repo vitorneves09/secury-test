@@ -1,0 +1,61 @@
+version: '3.8'
+
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: blog-mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: ${MYSQL_DATABASE:-blogdb}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-rootpassword}
+      MYSQL_USER: ${MYSQL_USER:-bloguser}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD:-blogpassword}
+    ports:
+      - "${MYSQL_PORT:-3306}:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - blog-network
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p${MYSQL_ROOT_PASSWORD:-rootpassword}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
+  # app:
+  #   build:
+  #     context: .
+  #     dockerfile: Dockerfile
+  #   container_name: blog-app
+  #   restart: unless-stopped
+  #   depends_on:
+  #     mysql:
+  #       condition: service_healthy
+  #   environment:
+  #     SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/${MYSQL_DATABASE:-blogdb}?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
+  #     SPRING_DATASOURCE_USERNAME: ${MYSQL_USER:-bloguser}
+  #     SPRING_DATASOURCE_PASSWORD: ${MYSQL_PASSWORD:-blogpassword}
+  #     SPRING_JPA_HIBERNATE_DDL_AUTO: update
+  #     SPRING_JPA_SHOW_SQL: ${SPRING_JPA_SHOW_SQL:-false}
+  #     JWT_SECRET: ${JWT_SECRET:-your-secret-key-change-this-in-production-use-a-very-long-secure-random-string}
+  #     JWT_EXPIRATION: ${JWT_EXPIRATION:-86400000}
+  #   ports:
+  #     - "${APP_PORT:-8080}:8080"
+  #   networks:
+  #     - blog-network
+  #   healthcheck:
+  #     test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:8080/actuator/health"]
+  #     interval: 30s
+  #     timeout: 10s
+  #     retries: 3
+  #     start_period: 60s
+
+volumes:
+  mysql_data:
+    driver: local
+
+networks:
+  blog-network:
+    driver: bridge

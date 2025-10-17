@@ -11,4 +11,6 @@ public interface PostRepository {
     Optional<Post> findBySlug(String slug);
     Post save(Post post);
     List<Post> findAll();
+    boolean existsBySlug(String slug);
+    boolean existsByTitle(String title);
 }
