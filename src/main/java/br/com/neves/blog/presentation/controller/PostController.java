@@ -7,6 +7,7 @@ import br.com.neves.blog.application.usecase.post.UpdatePostUseCase;
 import br.com.neves.blog.domain.entity.Post;
 import br.com.neves.blog.presentation.dto.PostRequest;
 import br.com.neves.blog.presentation.dto.PostResponse;
+import br.com.neves.blog.presentation.dto.PostUpdateRquest;
 import br.com.neves.blog.presentation.mapper.PostDtoMapper;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -63,7 +64,7 @@ public class PostController {
     @PutMapping("/{id}")
     public ResponseEntity<PostResponse> updatePost(
             @PathVariable Long id,
-            @Valid @RequestBody PostRequest request) {
+            @Valid @RequestBody PostUpdateRquest request)  {
         Post post = postDtoMapper.toDomain(request);
 
         Post updatedPost = updatePostUseCase.execute(id, post);
