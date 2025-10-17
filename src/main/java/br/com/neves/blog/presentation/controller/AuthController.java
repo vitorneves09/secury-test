@@ -1,6 +1,6 @@
 package br.com.neves.blog.presentation.controller;
 
-import br.com.neves.blog.application.usecase.AuthenticateUserUseCase;
+import br.com.neves.blog.application.usecase.user.AuthenticateUserUseCase;
 import br.com.neves.blog.presentation.dto.LoginRequest;
 import br.com.neves.blog.presentation.dto.LoginResponse;
 import jakarta.validation.Valid;

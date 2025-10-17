@@ -1,12 +1,12 @@
-package br.com.neves.blog.application.usecase;
+package br.com.neves.blog.application.usecase.user;
 
 import br.com.neves.blog.domain.entity.User;
 import br.com.neves.blog.domain.repository.UserRepository;
+import br.com.neves.blog.exception.AuthenticationCustomException;
 import br.com.neves.blog.infrastructure.security.JwtUtil;
 import br.com.neves.blog.presentation.dto.LoginRequest;
 import br.com.neves.blog.presentation.dto.LoginResponse;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -28,7 +28,7 @@ public class AuthenticateUserUseCase {
                 .orElseThrow(() -> new UsernameNotFoundException("Usuário não encontrado: " + loginRequest.getEmail()));
 
         if (!passwordEncoder.matches(loginRequest.getPassword(), user.getPassword())) {
-            throw new BadCredentialsException("Credenciais inválidas");
+            throw new AuthenticationCustomException("Credenciais inválidas");
         }
 
         String token = jwtUtil.generateToken(user.getUsername(), user.getRole(),user.getId());
