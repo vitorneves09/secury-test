@@ -3,6 +3,8 @@ package br.com.neves.blog.infrastructure.persistence.repository;
 import br.com.neves.blog.domain.entity.Post;
 import br.com.neves.blog.domain.repository.PostRepository;
 import br.com.neves.blog.infrastructure.persistence.mapper.PostMapper;
+import br.com.neves.blog.infrastructure.persistence.specification.PostSpecification;
+import br.com.neves.blog.presentation.dto.PostFilterDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -40,6 +42,14 @@ public class PostRespositoryImp implements PostRepository {
     @Override
     public List<Post> findAll() {
         return repository.findAll().stream()
+                .map(PostMapper::toDomain)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<Post> findAll(PostFilterDTO filter) {
+        return repository.findAll(PostSpecification.fromFilter(filter))
+                .stream()
                 .map(PostMapper::toDomain)
                 .collect(Collectors.toList());
     }

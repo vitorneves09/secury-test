@@ -5,6 +5,8 @@ import br.com.neves.blog.application.usecase.post.FindPostUseCase;
 import br.com.neves.blog.application.usecase.post.ListAllPostUseCase;
 import br.com.neves.blog.application.usecase.post.UpdatePostUseCase;
 import br.com.neves.blog.domain.entity.Post;
+import br.com.neves.blog.infrastructure.persistence.specification.PostSpecification;
+import br.com.neves.blog.presentation.dto.PostFilterDTO;
 import br.com.neves.blog.presentation.dto.PostRequest;
 import br.com.neves.blog.presentation.dto.PostResponse;
 import br.com.neves.blog.presentation.dto.PostUpdateRquest;
@@ -56,8 +58,9 @@ public class PostController {
     }
 
     @GetMapping("/all")
-    public ResponseEntity<List<Post>> listAllPosts() {
-        List<Post> posts = listAllPostUseCase.execute();
+    public ResponseEntity<List<Post>> listAllPosts(PostFilterDTO filterDTO) {
+        List<Post> posts = listAllPostUseCase.execute(filterDTO);
+
         return ResponseEntity.ok(posts);
     }
 

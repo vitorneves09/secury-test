@@ -1,28 +1,36 @@
 package br.com.neves.blog.application.usecase.post;
 
+
 import br.com.neves.blog.domain.entity.Post;
 import br.com.neves.blog.domain.repository.PostRepository;
-import br.com.neves.blog.infrastructure.persistence.specification.PostSpecification;
 import br.com.neves.blog.presentation.dto.PostFilterDTO;
-import lombok.RequiredArgsConstructor;
+import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-@Service
-@RequiredArgsConstructor
+@AllArgsConstructor
 @Slf4j
-public class ListAllPostUseCase {
+public class ListPostUseCase {
 
     private final PostRepository postRepository;
 
-    public List<Post> execute(PostFilterDTO filter) {
+    public List<Post> execute() {
         log.info("Listing all posts");
+
+        List<Post> posts = postRepository.findAll();
+
+        log.info("Found {} posts", posts.size());
+
+        return posts;
+    }
+
+    public List<Post> execute(PostFilterDTO filter) {
+        log.info("Listing posts with filters: {}", filter);
 
         List<Post> posts = postRepository.findAll(filter);
 
-        log.info("Found {} posts", posts.size());
+        log.info("Found {} posts matching the filters", posts.size());
 
         return posts;
     }
